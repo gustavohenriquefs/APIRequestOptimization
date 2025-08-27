@@ -28,7 +28,9 @@ ApiReduceCostLLM/
 │   └── app.py                  # Aplicação Flask principal
 ├── tests/
 │   ├── __init__.py
-│   └── test_optimization_service.py
+│   ├── test_optimization_service.py      # Testes unitários do serviço
+│   ├── test_components_integration.py    # Testes de integração dos componentes
+│   └── test_flask_integration.py         # Testes de integração da API Flask
 ├── venv/                       # Ambiente virtual Python
 ├── requirements.txt
 ├── main.py                     # Ponto de entrada
@@ -88,6 +90,7 @@ Otimiza um texto de acordo com as configurações fornecidas.
         "translate_to_english": true,
         "remove_accents": true,
         "word_compression": 0.8,
+        "min_word_length": 2,
         "stop_word_removal": 0.3,
         "remove_punctuation": false,
         "language": "pt"
@@ -141,10 +144,29 @@ Endpoint de verificação de saúde da API.
 
 - `translate_to_english`: Traduz o texto para inglês
 - `remove_accents`: Remove acentos dos caracteres
-- `word_compression`: Comprime palavras (0.0 a 1.0)
+- `word_compression`: Comprime palavras (0.0 a 1.0) - porcentagem de caracteres a manter
+- `min_word_length`: Tamanho mínimo das palavras após compressão (padrão: 2)
 - `stop_word_removal`: Remove palavras comuns (0.0 a 1.0)
 - `remove_punctuation`: Remove pontuação
 - `language`: Idioma do texto ('pt' ou 'en')
+
+### Exemplo de Compressão com Tamanho Mínimo
+
+```json
+{
+    "text": "Esta funcionalidade permite controlar melhor a compressão das palavras",
+    "config": {
+        "word_compression": 0.6,
+        "min_word_length": 3,
+        "remove_accents": true
+    }
+}
+```
+
+**Resultado:**
+- `word_compression: 0.6` = mantém 60% dos caracteres de cada palavra
+- `min_word_length: 3` = garante que nenhuma palavra fique com menos de 3 caracteres
+- "funcionalidade" → "fncnldde" (respeitando o tamanho mínimo)
 
 ## Presets Disponíveis
 
@@ -155,9 +177,27 @@ Endpoint de verificação de saúde da API.
 
 ## Executando Testes
 
+### Todos os testes:
 ```bash
-pytest tests/
+pytest tests/ -v
 ```
+
+### Testes específicos:
+```bash
+# Testes unitários do serviço de otimização
+pytest tests/test_optimization_service.py -v
+
+# Testes de integração dos componentes
+pytest tests/test_components_integration.py -v
+
+# Testes de integração da API Flask
+pytest tests/test_flask_integration.py -v
+```
+
+### Estrutura de Testes:
+- `test_optimization_service.py`: Testes unitários das funções core
+- `test_components_integration.py`: Testes de integração entre componentes
+- `test_flask_integration.py`: Testes da API usando Flask test client
 
 ## Variáveis de Ambiente
 

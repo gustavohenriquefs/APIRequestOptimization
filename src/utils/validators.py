@@ -22,4 +22,8 @@ def validate_request_data(data: Dict[str, Any]) -> Optional[str]:
     if swr is not None and not (0 <= swr <= 1):
         return 'O valor de "stop_word_removal" deve estar entre 0 e 1.'
         
+    mwl = config.get('min_word_length')
+    if mwl is not None and not (isinstance(mwl, int) and mwl >= 1):
+        return 'O valor de "min_word_length" deve ser um número inteiro maior ou igual a 1.'
+        
     return None

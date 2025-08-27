@@ -3,7 +3,7 @@ echo === Iniciando API de Otimizacao de Prompts ===
 echo.
 
 REM Ativa o ambiente virtual
-call venv\Scripts\activate.bat
+call venv\Scripts\activate
 
 REM Verifica se o ambiente foi ativado corretamente
 if "%VIRTUAL_ENV%"=="" (

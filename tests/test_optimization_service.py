@@ -32,10 +32,22 @@ class TestOptimizationService:
     def test_compress_word(self):
         """Testa a compressão de palavras."""
         word = "exemplo"
-        result = OptimizationService._compress_word(word, 0.7)
+        result = OptimizationService._compress_word(word, 0.7, 2)
         assert len(result) < len(word)
         assert result.startswith('e')
         assert result.endswith('o')
+
+    def test_compress_word_with_min_length(self):
+        """Testa a compressão de palavras com tamanho mínimo."""
+        word = "teste"
+        
+        # Compressão com tamanho mínimo 3
+        result = OptimizationService._compress_word(word, 0.4, 3)
+        assert len(result) >= 3
+        
+        # Compressão com tamanho mínimo maior que a palavra
+        result = OptimizationService._compress_word(word, 0.5, 10)
+        assert result == word
 
     def test_optimize_basic(self, optimization_service):
         """Testa a otimização básica sem configurações especiais."""

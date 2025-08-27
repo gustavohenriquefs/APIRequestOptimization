@@ -9,7 +9,12 @@ from src.models.optimization import PresetConfig
 PRESETS: Dict[str, PresetConfig] = {
     'conservative': PresetConfig(
         description='Otimização leve - remove apenas elementos redundantes.',
-        config={'word_compression': 0.9, 'stop_word_removal': 0.1, 'language': 'pt'}
+        config={
+            'word_compression': 0.9, 
+            'stop_word_removal': 0.1, 
+            'min_word_length': 3,
+            'language': 'pt'
+        }
     ),
     'moderate': PresetConfig(
         description='Balanceio entre economia e legibilidade, incluindo tradução.',
@@ -18,6 +23,7 @@ PRESETS: Dict[str, PresetConfig] = {
             'remove_accents': True, 
             'translate_to_english': True, 
             'stop_word_removal': 0.3, 
+            'min_word_length': 2,
             'language': 'pt'
         }
     ),
@@ -29,6 +35,7 @@ PRESETS: Dict[str, PresetConfig] = {
             'remove_punctuation': True, 
             'translate_to_english': True, 
             'stop_word_removal': 0.5, 
+            'min_word_length': 1,
             'language': 'pt'
         }
     ),

@@ -26,29 +26,62 @@ class OptimizationService:
         return "".join(c for c in normalized_text if unicodedata.category(c) != 'Mn')
 
     @staticmethod
-    def _compress_word(word: str, compression_ratio: float) -> str:
+    def _compress_word(word: str, compression_ratio: float, min_word_length: int = 2) -> str:
         """
         Comprime uma palavra removendo letras de forma inteligente.
-        Mantém a primeira e a última letra e prioriza consoantes.
+        
+        Args:
+            word: Palavra a ser comprimida
+            compression_ratio: Porcentagem de caracteres a manter (0.0 a 1.0)
+            min_word_length: Tamanho mínimo que a palavra deve ter após compressão
+            
+        Returns:
+            Palavra comprimida respeitando o tamanho mínimo
         """
-        if len(word) <= 3 or not (0.0 < compression_ratio < 1.0):
+        # Não comprimir palavras muito pequenas ou com parâmetros inválidos
+        if len(word) <= min_word_length or not (0.0 < compression_ratio < 1.0):
             return word
 
-        keep_chars_count = max(2, int(len(word) * compression_ratio))
-        if keep_chars_count >= len(word):
+        # Calcula quantos caracteres manter baseado na porcentagem
+        target_length_by_ratio = int(len(word) * compression_ratio)
+        
+        # O tamanho final deve respeitar o mínimo, mas priorizar a porcentagem quando possível
+        target_length = max(min_word_length, target_length_by_ratio)
+        
+        # Se o tamanho alvo já é igual ou maior que a palavra original
+        if target_length >= len(word):
             return word
 
-        first_char, last_char = word[0], word[-1]
+        # Para palavras pequenas (3 caracteres ou menos), aplica corte simples
+        if len(word) <= 3:
+            return word[:target_length]
+
+        # Para palavras maiores, usa estratégia inteligente mantendo primeiro e último caractere
+        if target_length <= 2:
+            # Se só podemos manter 2 caracteres, mantém primeiro e último
+            return word[0] + word[-1]
+        
+        first_char = word[0]
+        last_char = word[-1]
         middle_chars = list(word[1:-1])
 
-        # Prioriza manter consoantes sobre vogais
-        vowels = "aeiouáéíóúàèìòùâêîôûãõ"
+        # Prioriza manter consoantes sobre vogais no meio da palavra
+        vowels = "aeiouáéíóúàèìòùâêîôûãõAEIOUÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÃÕ"
         middle_chars.sort(key=lambda char: char.lower() in vowels)
 
-        # Mantém os caracteres mais importantes do meio
-        kept_middle = "".join(middle_chars[:keep_chars_count - 2])
+        # Calcula quantos caracteres do meio manter (target_length - 2 para primeiro e último)
+        middle_chars_to_keep = target_length - 2
         
-        return first_char + kept_middle + last_char
+        # Garante que não tentamos manter mais caracteres do que temos
+        middle_chars_to_keep = min(middle_chars_to_keep, len(middle_chars))
+        
+        if middle_chars_to_keep <= 0:
+            compressed = first_char + last_char
+        else:
+            kept_middle = "".join(middle_chars[:middle_chars_to_keep])
+            compressed = first_char + kept_middle + last_char
+            
+        return compressed
 
     @staticmethod
     def remove_excessive_whitespace(text: str) -> str:
@@ -93,6 +126,7 @@ class OptimizationService:
         stop_word_ratio = config_options.get('stop_word_removal', 0.0)
         should_remove_accents = config_options.get('remove_accents', False)
         word_compression_ratio = config_options.get('word_compression', 1.0)
+        min_word_length = config_options.get('min_word_length', 2)
         should_remove_punctuation = config_options.get('remove_punctuation', False)
 
         processed_text = text
@@ -111,16 +145,17 @@ class OptimizationService:
         if should_remove_accents:
             processed_text = self.remove_accents(processed_text)
 
-        if word_compression_ratio < 1.0:
-            words = processed_text.split(' ')
-            # Usa a função de compressão em cada palavra
-            compressed_words = [self._compress_word(w, word_compression_ratio) for w in words]
-            processed_text = ' '.join(compressed_words)
-
+        # Remove pontuação ANTES da compressão para não afetar o tamanho mínimo
         if should_remove_punctuation:
             # Cria um padrão regex para remover todos os caracteres de pontuação
             punct_regex = f'[{re.escape("".join(self.config.REMOVABLE_CHARS))}]'
             processed_text = re.sub(punct_regex, '', processed_text)
+
+        if word_compression_ratio < 1.0:
+            words = processed_text.split(' ')
+            # Usa a função de compressão em cada palavra com tamanho mínimo
+            compressed_words = [self._compress_word(w, word_compression_ratio, min_word_length) for w in words if w.strip()]
+            processed_text = ' '.join(compressed_words)
         
         # Limpeza final de espaços que podem ter sido criados
         processed_text = self.remove_excessive_whitespace(processed_text)
