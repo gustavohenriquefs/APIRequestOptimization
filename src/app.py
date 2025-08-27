@@ -278,7 +278,10 @@ def create_api_app(config_class=None):
                 
                 text = data['text']
                 
-                # Se preset foi especificado, usa suas configurações
+                # Configurações manuais (excluindo 'text' e 'preset')
+                manual_config = {k: v for k, v in data.items() if k not in ['text', 'preset']}
+                
+                # Se preset foi especificado, usa como base e sobrescreve com configurações manuais
                 if 'preset' in data:
                     presets = get_presets_dict()
                     if data['preset'] not in presets:
@@ -286,10 +289,13 @@ def create_api_app(config_class=None):
                             'error': f"Preset '{data['preset']}' não encontrado",
                             'code': 'INVALID_PRESET'
                         }, 400
-                    config_options = presets[data['preset']]['config']
+                    
+                    # Começa com o preset e sobrescreve com configurações manuais
+                    config_options = presets[data['preset']]['config'].copy()
+                    config_options.update(manual_config)  # Manual sobrescreve preset
                 else:
-                    # Usa configurações manuais
-                    config_options = {k: v for k, v in data.items() if k != 'text'}
+                    # Usa apenas configurações manuais
+                    config_options = manual_config
                 
                 result = optimizer.optimize(text, config_options)
                 

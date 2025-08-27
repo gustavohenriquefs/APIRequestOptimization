@@ -5,20 +5,21 @@ meta {
 }
 
 post {
-  url: {{BASE_URL}}/optimize
+  url: {{BASE_URL}}/api/v1/optimization/optimize
   body: json
   auth: none
 }
 
 body:json {
   {
-      "text": "Esta funcionalidade permite controlar melhor a compressão das palavras",
-      "config": {
-          "word_compression": 0.9,     // Mantém 90% dos caracteres
-          "min_word_length": 3,        // Garante mínimo de 3 caracteres
-          "remove_accents": true,
-          "stop_word_removal": 0.5,
-          "translate_to_english": true
-      }
+    "text": "Criar imagem de gato    correndo no CE.",
+    "preset": "moderate",
+    "translate_to_english": true,
+    "language": "pt",
+    "stop_word_removal": 0.3,
+    "remove_accents": true,
+    "word_compression": 0.7,
+    "min_word_length": 3,
+    "remove_punctuation": false
   }
 }
