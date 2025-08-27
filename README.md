@@ -60,14 +60,20 @@ ApiReduceCostLLM/
 
 ## Executando a Aplicação
 
-### Modo Desenvolvimento
+### 🚀 API com Documentação Automática
 ```bash
+# Windows
+./start
+
+# Linux/Mac  
 python main.py
 ```
 
-### Usando Flask CLI
-```bash
-export FLASK_APP=src.app
+**URLs da API:**
+- **API Base**: `http://localhost:5000/api/v1/`
+- **Documentação Swagger**: `http://localhost:5000/docs/`
+- **Health Check**: `http://localhost:5000/api/v1/system/health`
+- **Presets**: `http://localhost:5000/api/v1/config/presets`
 export FLASK_ENV=development
 flask run
 ```

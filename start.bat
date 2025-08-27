@@ -16,7 +16,7 @@ echo Ambiente virtual ativado: %VIRTUAL_ENV%
 echo.
 
 REM Executa a aplicação
-echo Iniciando servidor Flask...
+echo Iniciando servidor Flask com documentacao...
 python main.py
 
 pause
