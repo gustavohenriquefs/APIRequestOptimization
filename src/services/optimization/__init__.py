@@ -1,7 +1,4 @@
-"""
-Serviços de otimização modularizados.
-"""
-from .abbreviation_service import AbbreviationService, ReplacementResult
+﻿from .abbreviation_service import AbbreviationService, ReplacementResult
 from .entity_preservation_service import (
     EntityPreservationService, 
     Entity, 

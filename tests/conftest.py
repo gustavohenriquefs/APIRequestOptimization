@@ -1,7 +1,4 @@
-"""
-Fixtures compartilhadas para todos os testes.
-"""
-import pytest
+﻿import pytest
 from src.app import create_api_app
 from src.config.settings import TestingConfig
 from src.services.optimization_service import OptimizationService
@@ -9,7 +6,6 @@ from src.services.optimization_service import OptimizationService
 
 @pytest.fixture
 def app():
-    """Fixture que cria a aplicação Flask para testes."""
     app = create_api_app()
     app.config['TESTING'] = True
     return app
@@ -17,40 +13,35 @@ def app():
 
 @pytest.fixture
 def client(app):
-    """Fixture que cria um cliente de teste."""
     return app.test_client()
 
 
 @pytest.fixture
 def config():
-    """Fixture que cria uma configuração de teste."""
     return TestingConfig()
 
 
 @pytest.fixture
 def optimization_service(config):
-    """Fixture que cria uma instância do serviço de otimização."""
     return OptimizationService(config)
 
 
 @pytest.fixture
 def sample_texts():
-    """Fixture com textos de exemplo para testes."""
     return {
-        'simple': "Este é um texto simples para otimização.",
-        'with_accents': "Acentuação com ção, não e ótimo texto com muitos acentos.",
+        'simple': "Este Ã© um texto simples para otimizaÃ§Ã£o.",
+        'with_accents': "AcentuaÃ§Ã£o com Ã§Ã£o, nÃ£o e Ã³timo texto com muitos acentos.",
         'with_numbers': "O projeto tem 10 desenvolvedores e custa R$ 23.456,78 reais.",
-        'with_locations': "Preciso ir para Ceará e depois para São Paulo.",
-        'with_animals': "O gato viralata subiu na árvore do cachorro labrador.",
-        'with_technology': "A aplicação usa JavaScript, Python e banco de dados PostgreSQL.",
-        'complex_mix': "Desenvolvendo aplicação em Python para 15 empresas no Ceará com tecnologia moderna.",
-        'long_text': "Este é um texto muito longo que precisa ser otimizado para reduzir custos de API do ChatGPT. O texto contém várias informações importantes que devem ser preservadas durante o processo de otimização, incluindo números importantes como 42 e localização como São Paulo."
+        'with_locations': "Preciso ir para CearÃ¡ e depois para SÃ£o Paulo.",
+        'with_animals': "O gato viralata subiu na Ã¡rvore do cachorro labrador.",
+        'with_technology': "A aplicaÃ§Ã£o usa JavaScript, Python e banco de dados PostgreSQL.",
+        'complex_mix': "Desenvolvendo aplicaÃ§Ã£o em Python para 15 empresas no CearÃ¡ com tecnologia moderna.",
+        'long_text': "Este Ã© um texto muito longo que precisa ser otimizado para reduzir custos de API do ChatGPT. O texto contÃ©m vÃ¡rias informaÃ§Ãµes importantes que devem ser preservadas durante o processo de otimizaÃ§Ã£o, incluindo nÃºmeros importantes como 42 e localizaÃ§Ã£o como SÃ£o Paulo."
     }
 
 
 @pytest.fixture
 def preset_configs():
-    """Fixture com configurações de presets para testes."""
     return {
         'basic': {
             'remove_stopwords': True,

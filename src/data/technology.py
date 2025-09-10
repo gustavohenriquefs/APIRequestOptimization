@@ -1,9 +1,5 @@
-"""
-Termos técnicos e tecnológicos para preservação e abreviação.
-"""
-from typing import Dict, List
+﻿from typing import Dict, List
 
-# Tecnologias e linguagens de programação
 PROGRAMMING_TECHNOLOGIES = {
     'JavaScript': 'JS',
     'TypeScript': 'TS',
@@ -21,7 +17,6 @@ PROGRAMMING_TECHNOLOGIES = {
     'R': 'R'
 }
 
-# Frameworks e bibliotecas
 FRAMEWORKS = {
     'React': 'React',
     'Angular': 'Angular',
@@ -37,7 +32,6 @@ FRAMEWORKS = {
     'Node.js': 'Node'
 }
 
-# Banco de dados
 DATABASES = {
     'MySQL': 'MySQL',
     'PostgreSQL': 'PG',
@@ -50,7 +44,6 @@ DATABASES = {
     'Cassandra': 'Cassandra'
 }
 
-# Cloud e DevOps
 CLOUD_DEVOPS = {
     'Amazon Web Services': 'AWS',
     'Microsoft Azure': 'Azure',
@@ -64,7 +57,6 @@ CLOUD_DEVOPS = {
     'Ansible': 'Ansible'
 }
 
-# Protocolos e APIs
 PROTOCOLS_APIS = {
     'Application Programming Interface': 'API',
     'Hypertext Transfer Protocol': 'HTTP',
@@ -78,7 +70,6 @@ PROTOCOLS_APIS = {
     'Secure Shell': 'SSH'
 }
 
-# Formatos de dados
 DATA_FORMATS = {
     'JavaScript Object Notation': 'JSON',
     'Extensible Markup Language': 'XML',
@@ -89,7 +80,6 @@ DATA_FORMATS = {
     'Cascading Style Sheets': 'CSS'
 }
 
-# Inteligência Artificial e ML
 AI_ML_TERMS = {
     'Inteligência Artificial': 'IA',
     'Artificial Intelligence': 'AI',
@@ -105,7 +95,6 @@ AI_ML_TERMS = {
     'Recurrent Neural Network': 'RNN'
 }
 
-# Metodologias e processos
 METHODOLOGIES = {
     'Agile': 'Agile',
     'Scrum': 'Scrum',
@@ -121,7 +110,6 @@ METHODOLOGIES = {
 }
 
 def get_all_tech_terms() -> Dict[str, str]:
-    """Retorna todos os termos técnicos."""
     all_tech = {}
     all_tech.update(PROGRAMMING_TECHNOLOGIES)
     all_tech.update(FRAMEWORKS)
@@ -134,11 +122,9 @@ def get_all_tech_terms() -> Dict[str, str]:
     return all_tech
 
 def is_tech_term(text: str) -> bool:
-    """Verifica se o texto é um termo técnico."""
     tech_terms = get_all_tech_terms()
     return text in tech_terms or text in tech_terms.values()
 
-# Categorias de preservação para termos técnicos
 TECH_PRESERVATION = {
     'never_compress': {'API', 'HTTP', 'HTTPS', 'JSON', 'XML', 'SQL', 'HTML', 'CSS'},
     'minimal_compress': set(AI_ML_TERMS.values()) | set(PROTOCOLS_APIS.values()),

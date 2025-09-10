@@ -1,7 +1,4 @@
-"""
-Controladores da API Flask.
-"""
-import logging
+﻿import logging
 from dataclasses import asdict
 
 from flask import jsonify, request
@@ -12,13 +9,11 @@ from src.utils.presets import get_presets_dict
 
 
 class OptimizationController:
-    """Controlador para endpoints de otimização."""
 
     def __init__(self, optimization_service: OptimizationService):
         self.optimization_service = optimization_service
 
     def optimize(self):
-        """Endpoint principal para otimização de prompts."""
         data = request.get_json()
         
         error_message = validate_request_data(data)
@@ -31,7 +26,6 @@ class OptimizationController:
             config = data.get('config', {})
             result = self.optimization_service.optimize(text, config)
             
-            # Converte o dataclass para dicionário para serialização JSON
             response_dict = {
                 'original_text': result.original_text,
                 'optimized_text': result.optimized_text,
@@ -46,10 +40,8 @@ class OptimizationController:
 
     @staticmethod
     def get_presets():
-        """Retorna configurações predefinidas para diferentes níveis de otimização."""
         return jsonify(get_presets_dict())
 
     @staticmethod
     def health_check():
-        """Endpoint de verificação de saúde (health check) da API."""
         return jsonify({'status': 'healthy', 'version': '2.0.0'})

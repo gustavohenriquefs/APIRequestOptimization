@@ -1,7 +1,4 @@
-"""
-Serviço para aplicação inteligente de abreviações.
-"""
-import re
+﻿import re
 from typing import Dict, List, Tuple, Optional
 from dataclasses import dataclass
 
@@ -13,7 +10,6 @@ from src.data.numbers import NumberPreservationService
 
 @dataclass
 class ReplacementResult:
-    """Resultado de uma substituição de abreviação."""
     original: str
     replacement: str
     position: int
@@ -21,23 +17,19 @@ class ReplacementResult:
     category: str = "general"
 
 class AbbreviationService:
-    """Serviço para aplicação inteligente de abreviações."""
     
     def __init__(self):
         self.abbreviations = self._build_abbreviation_map()
         self.number_service = NumberPreservationService()
         
     def _build_abbreviation_map(self) -> Dict[str, str]:
-        """Constrói mapa unificado de abreviações."""
         all_abbrevs = {}
         
-        # Adiciona todas as categorias
         all_abbrevs.update(get_all_locations())
         all_abbrevs.update(get_all_nature())
         all_abbrevs.update(get_all_tech_terms())
         all_abbrevs.update(get_all_abbreviations())
         
-        # Adiciona variações de localização
         all_abbrevs.update(LOCATION_VARIATIONS)
         
         return all_abbrevs
@@ -48,18 +40,12 @@ class AbbreviationService:
         aggressiveness: float = 0.5,
         preserve_context: bool = True
     ) -> Tuple[str, List[ReplacementResult]]:
-        """
-        Aplica abreviações no texto baseado no nível de agressividade.
-        Versão melhorada com suporte a variações de capitalização e números.
-        """
         processed_text = text
         replacements = []
         
-        # Primeiro, trata localizações com variações especiais
         processed_text, location_replacements = self._handle_location_variations(processed_text)
         replacements.extend(location_replacements)
         
-        # Depois aplica abreviações gerais
         sorted_abbrevs = sorted(
             self.abbreviations.items(),
             key=lambda x: len(x[0]),
@@ -79,21 +65,14 @@ class AbbreviationService:
         return processed_text, replacements
     
     def _handle_location_variations(self, text: str) -> Tuple[str, List[ReplacementResult]]:
-        """Trata variações específicas de localização como Ceará/ceara/Ceara."""
         replacements = []
         processed_text = text
         
-        # Padrões específicos para variações comuns
         location_patterns = [
-            # Ceará e variações
             (r'\b[Cc]ear[aá]\b', 'CE', 'location'),
-            # São Paulo variações  
             (r'\b[Ss][ãa]o\s+[Pp]aulo\b', 'SP', 'location'),
-            # Rio de Janeiro
             (r'\b[Rr]io\s+de\s+[Jj]aneiro\b', 'RJ', 'location'),
-            # Brasília
             (r'\b[Bb]ras[ií]lia\b', 'BSB', 'location'),
-            # Minas Gerais
             (r'\b[Mm]inas\s+[Gg]erais\b', 'MG', 'location'),
         ]
         
@@ -103,7 +82,7 @@ class AbbreviationService:
                 original_text = match.group()
                 savings = len(original_text) - len(abbrev)
                 
-                if savings > 0:  # Só substitui se economiza caracteres
+                if savings > 0:
                     replacements.append(ReplacementResult(
                         original=original_text,
                         replacement=abbrev,
@@ -122,7 +101,6 @@ class AbbreviationService:
         abbrev: str, 
         aggressiveness: float
     ) -> bool:
-        """Determina se uma palavra deve ser abreviada."""
         if len(abbrev) >= len(original):
             return False
             
@@ -138,21 +116,17 @@ class AbbreviationService:
         abbrev: str,
         preserve_context: bool
     ) -> Tuple[str, List[ReplacementResult]]:
-        """Substitui palavra preservando contexto e capitalização."""
         replacements = []
         
-        # Verifica se é um número importante antes de processar
         if preserve_context and self.number_service.is_important_number(original)[0]:
             return text, []
         
-        # Pattern para busca case-insensitive com word boundaries
         pattern = re.compile(r'\b' + re.escape(original) + r'\b', re.IGNORECASE)
         
         def replace_func(match):
             matched_text = match.group()
             start_pos = match.start()
             
-            # Preserva capitalização
             if matched_text[0].isupper():
                 if len(abbrev) <= 3:
                     replacement = abbrev.upper()
@@ -161,9 +135,8 @@ class AbbreviationService:
             else:
                 replacement = abbrev.lower()
             
-            # Verifica contexto se solicitado
             if preserve_context and not self._is_safe_context(text, start_pos):
-                return matched_text  # Não substitui em contexto duvidoso
+                return matched_text
             
             savings = len(matched_text) - len(replacement)
             replacements.append(ReplacementResult(
@@ -180,12 +153,10 @@ class AbbreviationService:
         return new_text, replacements
     
     def _is_safe_context(self, text: str, position: int, window: int = 20) -> bool:
-        """Verifica se o contexto ao redor da palavra é seguro para abreviação."""
         start = max(0, position - window)
         end = min(len(text), position + window)
         context = text[start:end].lower()
         
-        # Contextos onde é menos seguro abreviar
         unsafe_patterns = [
             r'\b(?:não|never|not)\b.*',  # Negações próximas
             r'[.!?]\s*$',  # Final de frases importantes
@@ -199,7 +170,6 @@ class AbbreviationService:
         return True
     
     def estimate_savings(self, text: str, aggressiveness: float = 0.5) -> Dict[str, int]:
-        """Estima economia potencial sem aplicar as mudanças."""
         _, replacements = self.apply_abbreviations(text, aggressiveness, preserve_context=False)
         
         total_savings = sum(r.savings for r in replacements)

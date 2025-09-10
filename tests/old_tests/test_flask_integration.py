@@ -1,17 +1,12 @@
-"""
-Teste do Flask app usando o test client interno.
-"""
-import json
+﻿import json
 from src.app import create_api_app
 
 def test_flask_app():
-    """Testa os endpoints da aplicação Flask usando o test client."""
     print("=== Testando Flask App com Test Client ===\n")
     
     app = create_api_app()
     
     with app.test_client() as client:
-        # Teste 1: Health Check
         print("1. Testando Health Check...")
         response = client.get('/api/v1/system/health')
         print(f"   Status Code: {response.status_code}")
@@ -21,7 +16,6 @@ def test_flask_app():
         assert data['status'] == 'healthy'
         print("   [OK] Health check passou!\n")
         
-        # Teste 2: Presets
         print("2. Testando Presets...")
         response = client.get('/api/v1/config/presets')
         print(f"   Status Code: {response.status_code}")
@@ -32,10 +26,9 @@ def test_flask_app():
         assert 'moderate' in data
         print("   [OK] Presets funcionando!\n")
         
-        # Teste 3: Otimização básica
-        print("3. Testando Otimização...")
+        print("3. Testando OtimizaÃ§Ã£o...")
         payload = {
-            "text": "Este é um texto de exemplo para testar a API de otimização.",
+            "text": "Este Ã© um texto de exemplo para testar a API de otimizaÃ§Ã£o.",
             "remove_accents": True,
             "stop_word_removal": 0.2,
             "word_compression": 0.8
@@ -52,14 +45,13 @@ def test_flask_app():
             print(f"   Texto original: {data['original_text']}")
             print(f"   Texto otimizado: {data['optimized_text']}")
             print(f"   Economia: {data['stats']['compression_ratio_percent']}%")
-            print("   [OK] Otimização funcionando!\n")
+            print("   [OK] OtimizaÃ§Ã£o funcionando!\n")
         else:
             print(f"   Erro: {data}")
             
         assert response.status_code == 200
         
-        # Teste 4: Validação de erro
-        print("4. Testando validação de erro...")
+        print("4. Testando validaÃ§Ã£o de erro...")
         invalid_payload = {"invalid": "data"}
         
         response = client.post('/api/v1/optimization/optimize',
@@ -67,9 +59,8 @@ def test_flask_app():
                              content_type='application/json')
         
         print(f"   Status Code: {response.status_code}")
-        # A validação do Flask-RESTX retorna erro 400 por campos obrigatórios faltando
         assert response.status_code == 400
-        print("   [OK] Validação de erro funcionando!\n")
+        print("   [OK] ValidaÃ§Ã£o de erro funcionando!\n")
         
     print("SUCESSO: Todos os testes do Flask app passaram!")
 

@@ -1,9 +1,5 @@
-"""
-Abreviações gerais para otimização de texto.
-"""
-from typing import Dict
+﻿from typing import Dict
 
-# Unidades de medida
 MEASUREMENTS = {
     'quilômetros': 'km',
     'metros': 'm',
@@ -25,7 +21,6 @@ MEASUREMENTS = {
     'milliliters': 'ml'
 }
 
-# Tempo e datas
 TIME_UNITS = {
     'janeiro': 'jan',
     'fevereiro': 'fev',
@@ -67,7 +62,6 @@ TIME_UNITS = {
     'sunday': 'sun'
 }
 
-# Organizações e títulos
 ORGANIZATIONS = {
     'universidade': 'univ',
     'university': 'univ',
@@ -89,7 +83,6 @@ ORGANIZATIONS = {
     'department': 'dept'
 }
 
-# Títulos e tratamentos
 TITLES = {
     'senhor': 'sr',
     'senhora': 'sra',
@@ -109,7 +102,6 @@ TITLES = {
     'architect': 'arch'
 }
 
-# Palavras comuns de negócios
 BUSINESS_TERMS = {
     'desenvolvimento': 'dev',
     'development': 'dev',
@@ -141,7 +133,6 @@ BUSINESS_TERMS = {
     'implementation': 'impl'
 }
 
-# Direções e localização
 DIRECTIONS = {
     'norte': 'N',
     'sul': 'S',
@@ -162,7 +153,6 @@ DIRECTIONS = {
 }
 
 def get_all_abbreviations() -> Dict[str, str]:
-    """Retorna todas as abreviações disponíveis."""
     all_abbrev = {}
     all_abbrev.update(MEASUREMENTS)
     all_abbrev.update(TIME_UNITS)
@@ -173,7 +163,6 @@ def get_all_abbreviations() -> Dict[str, str]:
     return all_abbrev
 
 def get_savings_potential(text: str) -> Dict[str, int]:
-    """Calcula potencial de economia com abreviações."""
     abbrevs = get_all_abbreviations()
     savings = 0
     opportunities = 0

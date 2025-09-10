@@ -1,37 +1,25 @@
-"""
-Dados numéricos e padrões para preservação durante otimização.
-"""
-import re
+﻿import re
 from typing import Dict, List, Tuple, Optional
 
-# Números que são tipicamente importantes e devem ser preservados
 IMPORTANT_NUMBER_PATTERNS = [
-    # Números redondos importantes
     r'\b(?:10|20|30|40|50|60|70|80|90|100|1000)\b',
     
-    # Percentuais sem símbolo
     r'\b\d+(?:\.\d+)?\s*(?:por\s*cento|percent)\b',
     
-    # Idades típicas
     r'\b(?:[1-9]|[1-9][0-9])\s*anos?\b',
     
-    # Quantidades
     r'\b\d+\s*(?:unidades?|peças?|itens?|vezes?)\b',
     
-    # Números em contextos específicos
     r'(?:versão|version|v\.?)\s*\d+(?:\.\d+)*',
     r'(?:capítulo|chapter|cap\.?)\s*\d+',
     r'(?:página|page|p\.?)\s*\d+',
     
-    # Números decimais importantes
     r'\b\d+\.\d+\b',
     
-    # Números em séries ou listas
     r'\b\d+[.,]\s*\d+[.,]?\s*\d*',
 ]
 
 class NumberPreservationService:
-    """Serviço para identificar e preservar números importantes."""
     
     def __init__(self):
         self.patterns = [re.compile(pattern, re.IGNORECASE) for pattern in IMPORTANT_NUMBER_PATTERNS]
@@ -44,38 +32,25 @@ class NumberPreservationService:
         }
     
     def is_important_number(self, text: str, position: int = 0, context_window: int = 50) -> Tuple[bool, str]:
-        """
-        Determina se um número é importante baseado em padrões e contexto.
-        VERSÃO ATUALIZADA: Todos os números são importantes, incluindo unidades.
-        
-        Returns:
-            Tupla (é_importante, razão)
-        """
         text_clean = text.strip()
         
-        # TODOS os números são importantes agora
         if re.search(r'\d', text_clean):
             return True, "contains_digits"
         
-        # Unidades de medida e siglas também são importantes
         measurement_units = {
-            # Medidas básicas
             'kg', 'g', 'mg', 'ton', 't',  # peso
             'km', 'm', 'cm', 'mm',        # distância  
             'l', 'ml', 'cl',              # volume
             'h', 'min', 's', 'ms',        # tempo
             'º', '°', 'c',                # temperatura/ângulo
             
-            # Unidades técnicas
             'mb', 'gb', 'tb', 'kb',       # armazenamento
             'hz', 'khz', 'mhz', 'ghz',    # frequência
             'v', 'w', 'kw', 'mw',         # elétrica
             'a', 'ma', 'ka',              # corrente
             
-            # Moedas
             'r$', 'usd', 'eur', '$',      # moedas
             
-            # Porcentagens e matemática
             '%', 'pct', 'x', '×',         # operações
         }
         
@@ -83,12 +58,10 @@ class NumberPreservationService:
         if text_lower in measurement_units:
             return True, 'measurement_unit'
         
-        # Verifica padrões diretos (mantém lógica original para compatibilidade)
         for pattern in self.patterns:
             if pattern.search(text_clean):
                 return True, "matched_pattern"
         
-        # Verifica contexto se posição foi fornecida
         if position > 0:
             start = max(0, position - context_window)
             end = min(len(text), position + context_window)
@@ -101,10 +74,8 @@ class NumberPreservationService:
         return False, "no_importance_indicators"
     
     def extract_important_numbers(self, text: str) -> List[Dict]:
-        """Extrai todos os números importantes do texto."""
         important_numbers = []
         
-        # Busca por números em geral
         number_pattern = re.compile(r'\b\d+(?:\.\d+)?\b')
         
         for match in number_pattern.finditer(text):
@@ -123,11 +94,9 @@ class NumberPreservationService:
         return important_numbers
     
     def should_preserve_number(self, number: str, context: str = "") -> bool:
-        """Determina se um número específico deve ser preservado."""
         is_important, _ = self.is_important_number(f"{context} {number}")
         return is_important
 
-# Lista de números comumente importantes por contexto
 CONTEXTUAL_IMPORTANT_NUMBERS = {
     'business': [10, 20, 50, 100, 1000, 5000, 10000],
     'technical': [1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024],
@@ -136,7 +105,6 @@ CONTEXTUAL_IMPORTANT_NUMBERS = {
 }
 
 def get_number_preservation_rules() -> Dict[str, float]:
-    """Retorna regras de preservação para diferentes tipos de números."""
     return {
         'financial': 1.0,      # 100% preservação para números financeiros
         'measurement': 0.9,    # 90% preservação para medidas

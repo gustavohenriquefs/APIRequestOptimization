@@ -1,7 +1,4 @@
-"""
-Serviço para identificar e preservar entidades importantes durante otimização.
-"""
-import re
+﻿import re
 from typing import List, Dict, Set, Tuple, Optional
 from dataclasses import dataclass
 from enum import Enum
@@ -11,7 +8,6 @@ from src.data.animals import is_nature_element, PRESERVATION_CATEGORIES
 from src.data.technology import is_tech_term, TECH_PRESERVATION
 
 class EntityType(Enum):
-    """Tipos de entidades reconhecidas."""
     MONEY = "money"
     PERCENTAGE = "percentage"
     DATE = "date"
@@ -25,7 +21,6 @@ class EntityType(Enum):
     PHONE = "phone"
 
 class PreservationLevel(Enum):
-    """Níveis de preservação."""
     NEVER_COMPRESS = "never"      # Nunca comprimir (ex: URLs, emails)
     HIGH_PRESERVE = "high"        # Compressão mínima (ex: dinheiro, datas)
     MEDIUM_PRESERVE = "medium"    # Compressão moderada (ex: locais)
@@ -33,7 +28,6 @@ class PreservationLevel(Enum):
 
 @dataclass
 class Entity:
-    """Representa uma entidade encontrada no texto."""
     text: str
     entity_type: EntityType
     start: int
@@ -42,14 +36,12 @@ class Entity:
     confidence: float = 0.9
 
 class EntityPreservationService:
-    """Serviço para identificar e proteger entidades importantes."""
     
     def __init__(self):
         self.patterns = self._build_entity_patterns()
         self.preservation_rules = self._build_preservation_rules()
     
     def _build_entity_patterns(self) -> Dict[EntityType, List[re.Pattern]]:
-        """Constrói padrões regex para cada tipo de entidade."""
         return {
             EntityType.MONEY: [
                 re.compile(r'\$\d+(?:\.\d{2})?', re.I),
@@ -97,7 +89,6 @@ class EntityPreservationService:
         }
     
     def _build_preservation_rules(self) -> Dict[EntityType, PreservationLevel]:
-        """Define regras de preservação para cada tipo de entidade."""
         return {
             EntityType.MONEY: PreservationLevel.NEVER_COMPRESS,
             EntityType.PERCENTAGE: PreservationLevel.NEVER_COMPRESS,
@@ -113,10 +104,8 @@ class EntityPreservationService:
         }
     
     def extract_entities(self, text: str) -> List[Entity]:
-        """Extrai todas as entidades do texto."""
         entities = []
         
-        # Extrai entidades baseadas em padrões regex
         for entity_type, patterns in self.patterns.items():
             for pattern in patterns:
                 for match in pattern.finditer(text):
@@ -129,23 +118,19 @@ class EntityPreservationService:
                     )
                     entities.append(entity)
         
-        # Extrai entidades baseadas em dicionários
         entities.extend(self._extract_dictionary_entities(text))
         
-        # Remove sobreposições
         entities = self._remove_overlaps(entities)
         
         return sorted(entities, key=lambda e: e.start)
     
     def _extract_dictionary_entities(self, text: str) -> List[Entity]:
-        """Extrai entidades baseadas em dicionários de dados."""
         entities = []
         words = re.finditer(r'\b\w+(?:\s+\w+)*\b', text)
         
         for word_match in words:
             word_text = word_match.group()
             
-            # Verifica se é localização
             if is_known_location(word_text):
                 entities.append(Entity(
                     text=word_text,
@@ -155,9 +140,7 @@ class EntityPreservationService:
                     preservation_level=PreservationLevel.MEDIUM_PRESERVE
                 ))
             
-            # Verifica se é elemento da natureza
             elif is_nature_element(word_text):
-                # Determina nível baseado na categoria
                 if word_text.lower() in PRESERVATION_CATEGORIES['high_preserve']:
                     level = PreservationLevel.HIGH_PRESERVE
                 elif word_text.lower() in PRESERVATION_CATEGORIES['medium_preserve']:
@@ -173,9 +156,7 @@ class EntityPreservationService:
                     preservation_level=level
                 ))
             
-            # Verifica se é termo técnico
             elif is_tech_term(word_text):
-                # Determina nível baseado na categoria técnica
                 if word_text in TECH_PRESERVATION['never_compress']:
                     level = PreservationLevel.NEVER_COMPRESS
                 elif word_text in TECH_PRESERVATION['minimal_compress']:
@@ -196,11 +177,9 @@ class EntityPreservationService:
         return entities
     
     def _remove_overlaps(self, entities: List[Entity]) -> List[Entity]:
-        """Remove entidades sobrepostas, mantendo a mais específica."""
         if not entities:
             return entities
         
-        # Ordena por posição e depois por tamanho (maior primeiro)
         sorted_entities = sorted(entities, key=lambda e: (e.start, -(e.end - e.start)))
         
         filtered = []
@@ -214,21 +193,14 @@ class EntityPreservationService:
         return filtered
     
     def get_compression_limits(self, entities: List[Entity]) -> Dict[str, float]:
-        """Retorna limites de compressão para diferentes níveis de preservação."""
         return {
-            PreservationLevel.NEVER_COMPRESS.value: 1.0,     # 0% de compressão
-            PreservationLevel.HIGH_PRESERVE.value: 0.9,     # Max 10% de compressão
-            PreservationLevel.MEDIUM_PRESERVE.value: 0.7,   # Max 30% de compressão
-            PreservationLevel.LOW_PRESERVE.value: 0.5,      # Max 50% de compressão
+            PreservationLevel.NEVER_COMPRESS.value: 1.0,
+            PreservationLevel.HIGH_PRESERVE.value: 0.9,
+            PreservationLevel.MEDIUM_PRESERVE.value: 0.7,
+            PreservationLevel.LOW_PRESERVE.value: 0.5,
         }
     
     def should_preserve_word(self, word: str, position: int, entities: List[Entity]) -> Tuple[bool, Optional[float]]:
-        """
-        Verifica se uma palavra deve ser preservada e com que intensidade.
-        
-        Returns:
-            Tupla (deve_preservar, limite_compressão)
-        """
         for entity in entities:
             if entity.start <= position < entity.end:
                 limits = self.get_compression_limits([entity])

@@ -1,7 +1,4 @@
-"""
-Presets de configuração para diferentes níveis de otimização.
-"""
-from typing import Dict, Any
+﻿from typing import Dict, Any
 
 from src.models.optimization import PresetConfig
 
@@ -83,7 +80,6 @@ PRESETS: Dict[str, PresetConfig] = {
 
 
 def get_presets_dict() -> Dict[str, Dict[str, Any]]:
-    """Retorna os presets em formato de dicionário para serialização JSON."""
     return {
         name: {
             'description': preset.description,

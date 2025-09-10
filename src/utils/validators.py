@@ -1,14 +1,7 @@
-"""
-Utilitários para validação de dados.
-"""
-from typing import Dict, Any, Optional
+﻿from typing import Dict, Any, Optional
 
 
 def validate_request_data(data: Dict[str, Any]) -> Optional[str]:
-    """
-    Valida os dados recebidos na requisição.
-    Retorna uma mensagem de erro ou None se os dados forem válidos.
-    """
     if not data or 'text' not in data:
         return 'Campo "text" é obrigatório no corpo da requisição.'
     

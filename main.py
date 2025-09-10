@@ -1,10 +1,6 @@
-"""
-Ponto de entrada principal da aplicação com documentação automática.
-"""
-import os
+﻿import os
 import sys
 
-# Adiciona o diretório src ao path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
 
 from src.app import create_api_app
