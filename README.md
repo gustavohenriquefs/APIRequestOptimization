@@ -219,5 +219,3 @@ O projeto segue uma arquitetura em camadas:
 - **Services**: Lógica de negócio
 - **Controllers**: Controladores da API
 - **Utils**: Utilitários e helpers
-
-Esta estrutura facilita a manutenção, testes e expansão do código.
