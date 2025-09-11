@@ -145,8 +145,8 @@ class TestFlaskAPIComplexScenarios:
         optimized_len = len(data['optimized_text'])
         reduction_percent = ((original_len - optimized_len) / original_len) * 100
         
-        assert reduction_percent > 10, f"OtimizaÃ§Ã£o insuficiente: {reduction_percent:.1f}%"
-        assert reduction_percent < 80, f"OtimizaÃ§Ã£o muito agressiva: {reduction_percent:.1f}%"
+        assert reduction_percent > 10, f"Otimização insuficiente: {reduction_percent:.1f}%"
+        assert reduction_percent < 80, f"Otimização muito agressiva: {reduction_percent:.1f}%"
         
         assert 'stats' in data
         assert data['stats']['original_length'] > 0

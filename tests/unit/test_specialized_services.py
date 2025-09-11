@@ -10,21 +10,21 @@ class TestAbbreviationService:
         return AbbreviationService()
     
     def test_technology_abbreviations(self, service):
-        text = "JavaScript e melhor que Python para frontend"
+        text = "JavaScript é melhor que Python para frontend"
         result_text, replacements = service.apply_abbreviations(text)
         
         assert "JS" in result_text
         assert len(replacements) > 0
     
     def test_location_abbreviations(self, service):
-        text = "Viajei de Sao Paulo para Rio de Janeiro"
+        text = "Viajei de São Paulo para Rio de Janeiro"
         result_text, replacements = service.apply_abbreviations(text)
         
         assert "SP" in result_text
         assert "RJ" in result_text
     
     def test_animal_abbreviations(self, service):
-        text = "O cachorro labrador brincou com o gato siames"
+        text = "O cachorro labrador brincou com o gato siamês"
         result_text, replacements = service.apply_abbreviations(text)
         
         original_length = len(text)
@@ -32,13 +32,11 @@ class TestAbbreviationService:
         assert result_length <= original_length
     
     def test_measurement_abbreviations(self, service):
-        text = "A distancia e de 10 quilometros e o peso e 5 quilogramas"
+        text = "A distância é de 10 quilômetros e o peso é 5 quilogramas"
         result_text, replacements = service.apply_abbreviations(text)
         
+        assert "km" in result_text
         assert "kg" in result_text
-        original_length = len(text)
-        result_length = len(result_text)
-        assert result_length <= original_length
 
 
 class TestEntityPreservationService:
@@ -63,7 +61,7 @@ class TestEntityPreservationService:
         assert isinstance(limits, dict)
     
     def test_word_preservation_check(self, service):
-        text = "Python e otimo"
+        text = "Python é ótimo"
         entities = service.extract_entities(text)
         
         should_preserve, ratio = service.should_preserve_word("Python", 0, entities)

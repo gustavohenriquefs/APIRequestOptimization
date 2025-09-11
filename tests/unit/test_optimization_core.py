@@ -5,14 +5,14 @@ from src.services.optimization_service import OptimizationService
 class TestOptimizationServiceCore:
     
     def test_remove_accents(self, optimization_service):
-        text = "Acentuacao com cao, nao e otimo"
+        text = "Acentuação com ção, não e ótimo"
         expected = "Acentuacao com cao, nao e otimo"
         result = OptimizationService.remove_accents(text)
         assert result == expected
     
     def test_remove_excessive_whitespace(self, optimization_service):
-        text = "Texto  com    muitos   espaÃ§os"
-        expected = "Texto com muitos espaÃ§os"
+        text = "Texto  com    muitos   espaços"
+        expected = "Texto com muitos espaços"
         result = OptimizationService.remove_excessive_whitespace(text)
         assert result == expected
     
